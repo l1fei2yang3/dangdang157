@@ -62,6 +62,13 @@ class TOrder(models.Model):
         managed = False
         db_table = 't_order'
 
+class Confirm_string(models.Model):
+    code=models.CharField(max_length=200,null=True,)
+    email=models.CharField(max_length=40,null=True,)
+    code_time=models.DateTimeField(null=True,auto_now_add=True)
+    user_id=models.ForeignKey("TUser",on_delete=models.CASCADE,null=True)
+    class Meta:
+        db_table="t_confirm_string"
 
 class TOrderitem(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -80,8 +87,8 @@ class TUser(models.Model):
     email = models.CharField(max_length=40, blank=True, null=True)
     username = models.CharField(max_length=40, blank=True, null=True)
     password = models.CharField(max_length=100, blank=True, null=True)
-    status = models.CharField(max_length=40, blank=True, null=True)
+    status = models.IntegerField( blank=True, null=True,default=0)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 't_user'
