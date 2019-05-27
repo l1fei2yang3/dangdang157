@@ -81,28 +81,38 @@ def indent(request):
     if stat:
         request.session["stat"]=stat
     num=request.GET.get("num")
-    print(num,"76行")
+    print(stat,"76行")
     stauts = request.session.get("login")
     user = request.session.get("log")
     exit = request.GET.get("exit")
-    cartItem=request.session["cartItem"]
-    s_price=request.session["s_price"]
-    t_price=request.session["t_price"]
+    # cartItem=request.session["cartItem"]
+    cartItem=request.session.get("cartItem")
+    if cartItem is None:
+        return redirect("shopapp:car")
+    s_price=request.session.get("s_price")
+    t_price=request.session.get("t_price")
     print(cart,'75行cart')
     useremail = request.session.get("log")
-    userid = TUser.objects.filter(email=useremail)[0].id
-    addr=TAddress.objects.filter(user_id=userid)
-    if cart=="None":
-        return redirect("userapp:login")
+    # if cart is None:
+    #     request.session["jiesuan"]="1"
+    #     print('indentview的101行')
+    #     return redirect("userapp:login")
+    # else:
+    if exit:
+        del request.session["login"]
+        stauts = request.session.get("login")
+    if stauts and user:
+        username = user[0:3] + "***" + user[-4:]
     else:
-        if exit:
-            del request.session["login"]
-            stauts = request.session.get("login")
-        if stauts and user:
-            username = user[0:3] + "***" + user[-4:]
-        else:
-            username = None
-    return render(request,'shopapp/indent.html',{"username":username,"cartItem":cartItem,"s_price":s_price,"t_price":t_price,"addr":addr})
+        username = None
+    if useremail:
+        userid = TUser.objects.filter(email=useremail)[0].id
+        addr = TAddress.objects.filter(user_id=userid)
+        return render(request,'shopapp/indent.html',{"username":username,"cartItem":cartItem,"s_price":s_price,"t_price":t_price,"addr":addr})
+    else:
+        request.session["jiesuan"] = "1"
+        print('indentview的101行')
+        return redirect("userapp:login")
 def order(request):
     name = request.GET.get("ship_man")
     request.session["name"]=name
